@@ -1,0 +1,25 @@
+---
+- name: Get Port Status of Cisco Switches
+  hosts: switch
+  gather_facts: no
+
+  tasks:
+    - name: Get port status
+      ios_command:
+        commands:
+          - show interfaces status
+        register: port_status_output
+
+    - name: Save the Output to Excel file
+      delegate_to: localhost
+      run_once: True
+      python_script: |
+        import pandas as pd
+
+        data = """
+        {{ port_status_output.stdout | join('\n') }}
+        """
+
+        df = pd.read_csv(pd.compat.StringIO(data), delim_whitespace=True)
+        excel_filename = "port_status_{{ inventory_hostname }}.xlsx"
+        df.to_excel(excel_filename, index=False, engine='openpyxl')

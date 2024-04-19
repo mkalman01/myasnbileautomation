@@ -1,0 +1,17 @@
+---
+- name: Show Version
+  hosts: switch
+  gather_facts: false
+  connection: network_cli
+  vars:
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+
+  tasks:
+    - name: Show IOS version
+      cisco.ios.ios_command:
+        commands: sh version
+      register: output
+
+    - name: print output
+      debug:
+        var: output.stdout_lines

@@ -1,0 +1,37 @@
+---
+# Ansible Playbook to upload new Cisco IOS
+# Only upload file if the current IOS version is different
+
+- name: Upload new CISCO IOS files
+  hosts: switch_hwe
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    upgrade_ios_version: 17.09.04
+    new_ios_file_name: cat9k_lite_iosxe.17.09.04.SPA.bin
+    ansible_command_timeout: 1900
+
+  tasks:
+    - name: CHECK CURRENT VERSION
+      ios_facts:
+
+    - debug:
+        msg:
+          - "Current version is {{ ansible_net_version }}"
+          - "Upgrade image is 17.09.04"
+
+    - debug:
+        msg:
+          - "New IOS and current IOS are different."
+
+      when: ansible_net_version != upgrade_ios_version
+
+    - name: COPY_NEW_IOS_FROM_FTP (x.x.x.x)
+      cli_command:
+        command: "copy tftp://x.x.x.x/{{ new_ios_file_name }} flash:{{ new_ios_file_name }}"
+        check_all: True
+        prompt:
+          - "Destination filename"
+        answer:
+          - "{{ new_ios_file_name }}"

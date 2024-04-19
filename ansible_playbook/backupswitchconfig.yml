@@ -1,0 +1,16 @@
+---
+- name: Backup Cisco Switch Config
+  hosts: switch
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: Backup Cisco Switch Config
+      ios_command:
+        commands:
+          - show run
+      register: show_run_output
+    - name: Save the configuration file
+      copy:
+        content: "{{ show_run_output.stdout | join('\n') }}"
+        dest: "/home/sysadmin/Documents/Backuks/{{ inventory_hostname }}_config.txt"

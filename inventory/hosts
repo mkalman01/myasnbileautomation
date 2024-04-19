@@ -1,0 +1,7 @@
+[switch]
+hostname ansible_host=x.x.x.x
+
+[switch_enable]
+hostname ansible_host=x.x.x.x
+
+[router]

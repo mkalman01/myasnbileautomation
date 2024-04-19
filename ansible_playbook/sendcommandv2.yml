@@ -1,0 +1,16 @@
+---
+- name: Remove logging
+  hosts: switch
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: Remove incorrect logging
+      cisco.ios.ios_config:
+        lines:
+          - no logging host x.x.x.x
+      register: output
+
+    - name: print output
+      debug:
+        var: output.stdout_lines

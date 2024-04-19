@@ -1,0 +1,38 @@
+- name: Check Logging
+  hosts: switch
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: Get running configuration
+      ios_command:
+        commands:
+          - show run
+      register: running_config_output
+
+    - name: Parse logging servers
+      set_fact:
+        logging_servers: "{{ running_config_output.stdout | regex_findall('logging server (.+)') }}"
+
+    - name: Define servers to keep
+      set_fact:
+        servers_to_keep:
+          - x.x.x.x
+
+    - name: Create modified configuration
+      set_fact:
+        modified_config: "{{ running_config_output.stdout | regex_replace('logging server (.+)', '') | join('\n') }}"
+
+    - name: Print modified configuration
+      debug:
+        var: modified_config
+
+    - name: Push modified configuration
+      ios_config:
+        lines: "{{ modified_config.split('\n') }}"
+        save_when: modified
+      when: modified_config != running_config_output.stdout
+
+    - name: Add delimiter to modified configuration
+      set_fact:
+        modified_config_with_delimiter: "{{ modified_config + '\nend\n' }}"

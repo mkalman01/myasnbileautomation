@@ -1,0 +1,15 @@
+---
+- name: Check Logging
+  hosts: switch
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: Check correct logging
+      ios_command:
+        commands: sh run | i logging
+      register: output
+
+    - name: print output
+      debug:
+        var: output.stdout_lines

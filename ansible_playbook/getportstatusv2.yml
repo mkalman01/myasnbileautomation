@@ -1,0 +1,16 @@
+---
+- name: Get Porst Status from Cisco Swtich
+  hosts: switch
+  gather_facts: no
+
+  tasks:
+    - name: Get port status
+      ios_command:
+        commands:
+          - show interfaces status
+      register: port_status_output
+
+    - name: Save output to CSV
+      template:
+        src: port_status_template.j2
+        dest: "port_status_{{ inventory_hostname}}.csv"

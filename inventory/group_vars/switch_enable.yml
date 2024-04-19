@@ -1,0 +1,10 @@
+---
+ansible_connection: network_cli
+anisble_network_os: ios
+ansible_user: admin
+ansible_password: pass
+ansbile_become: yes
+ansible_become_method: enable
+anislbe_become_password: pass
+ansible_scp_if_ssh: True
+ansible_sftp_if_ssh: True

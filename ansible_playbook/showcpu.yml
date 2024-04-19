@@ -1,0 +1,15 @@
+---
+- name: CPU Utils
+  hosts: switch
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: Check CPU utils
+      ios_command:
+        commands: sh processes cpu sorted | i CPU
+      register: output
+
+    - name: print output
+      debug:
+        var: output.stdout_lines
