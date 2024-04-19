@@ -5,3 +5,4 @@ hostname ansible_host=x.x.x.x
 hostname ansible_host=x.x.x.x
 
 [router]
+hostname ansible_host=x.x.x.x
